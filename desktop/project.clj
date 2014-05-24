@@ -1,6 +1,6 @@
 (defproject checkers "0.0.1-SNAPSHOT"
   :description "FIXME: write description"
-  
+
   :dependencies [[com.badlogicgames.gdx/gdx "1.0.1"]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl "1.0.1"]
                  [com.badlogicgames.gdx/gdx-box2d "1.0.1"]
@@ -12,8 +12,12 @@
                  [com.badlogicgames.gdx/gdx-platform "1.0.1"
                   :classifier "natives-desktop"]
                  [org.clojure/clojure "1.6.0"]
-                 [play-clj "0.3.5"]]
-  
+                 [play-clj "0.3.5"]
+                 [net.mikera/core.matrix "0.23.0"]
+                 [expectations "2.0.6"]]
+
+   :plugins [[lein-autoexpect "1.2.2"]]
+
   :source-paths ["src" "src-common"]
   :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
   :aot [checkers.core.desktop-launcher]

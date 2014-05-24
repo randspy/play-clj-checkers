@@ -34,12 +34,14 @@
   (let [x-starting-position 170
         y-starting-position 50]
     (loop [elem-index 0
-           elements []]
+           board-elements []]
       (if (> elem-index 63)
-        elements
+        board-elements
         (recur (inc elem-index)
-               (conj elements
+               (conj board-elements
                      (generate-board-element
                       (get-board-element elem-index)
                       (+ x-starting-position (calc-position-in-row-in-px elem-index))
                       (+ y-starting-position (calc-position-in-col-in-px elem-index)))))))))
+
+

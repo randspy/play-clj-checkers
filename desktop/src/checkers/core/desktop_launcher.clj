@@ -9,4 +9,4 @@
   (LwjglApplication. checkers "checkers" 800 533)
   (Keyboard/enableRepeatEvents true))
 
-(-main)
+;;(-main)
