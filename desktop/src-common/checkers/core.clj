@@ -1,13 +1,14 @@
 (ns checkers.core
   (:require [play-clj.core :refer :all]
-            [play-clj.ui :refer :all]))
+            [play-clj.g2d :refer :all]))
 
 (defscreen main-screen
   :on-show
   (fn [screen entities]
     (update! screen :renderer (stage))
-    (label "Hello world!" (color :white)))
-  
+    (let [background (texture "board/wood.jpg")]
+      [background]))
+
   :on-render
   (fn [screen entities]
     (clear!)

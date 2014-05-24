@@ -6,5 +6,7 @@
 
 (defn -main
   []
-  (LwjglApplication. checkers "checkers" 800 600)
+  (LwjglApplication. checkers "checkers" 800 533)
   (Keyboard/enableRepeatEvents true))
+
+(-main)
