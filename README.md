@@ -1,14 +1,12 @@
 ## Introduction
 
-A play-clj game in which ... well, that part is up to you.
+A game of checkers. The goal is a game where a computer player can beat me.
 
 ## Contents
 
-* `android/src` Android-specific code
 * `desktop/resources` Images, audio, and other files
 * `desktop/src` Desktop-specific code
 * `desktop/src-common` Cross-platform game code
-* `ios/src` iOS-specific code
 
 ## Building
 
