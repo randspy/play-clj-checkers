@@ -10,8 +10,9 @@
   (fn [screen entities]
     (update! screen :renderer (stage))
     (let [background (texture "board/wood.jpg")
-          boardfield (board/generate-board)]
-      [background boardfield]))
+          boardfield (board/gen-board board/board)
+          new-game-pawns (board/gen-board board/new-game)]
+      [background boardfield new-game-pawns]))
 
   :on-render
   (fn [screen entities]
