@@ -14,9 +14,10 @@
                  [org.clojure/clojure "1.6.0"]
                  [play-clj "0.3.5"]
                  [net.mikera/core.matrix "0.23.0"]
-                 [expectations "2.0.6"]]
+                 [speclj "3.0.2"]]
 
-   :plugins [[lein-autoexpect "1.2.2"]]
+   :test-paths ["spec"]
+   :plugins [[speclj "3.0.2"]]
 
   :source-paths ["src" "src-common"]
   :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
