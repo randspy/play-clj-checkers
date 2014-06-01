@@ -14,7 +14,8 @@
                  [org.clojure/clojure "1.6.0"]
                  [play-clj "0.3.5"]
                  [net.mikera/core.matrix "0.23.0"]
-                 [speclj "3.0.2"]]
+                 [speclj "3.0.2"]
+                 [speclj-notify-osd "0.0.1"]]
 
    :test-paths ["spec"]
    :plugins [[speclj "3.0.2"]]
