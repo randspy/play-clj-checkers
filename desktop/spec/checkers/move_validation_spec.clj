@@ -41,54 +41,66 @@
                                                          [0 0]]) :from [-1 0] :to [0 1]}))))
           (describe "white pawn moves"
                     (it "can move up right"
-                        (should (is-move-valid {:board (mx/matrix [[0 0]
-                                                                   [:white-pawn 0]]) :from [1 0] :to [0 1]})))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0 0]
+                                                     [:white-pawn 0]]) :from [1 0] :to [0 1]})))
                     (it "can move up left"
-                        (should (is-move-valid {:board (mx/matrix [[0 0           0]
-                                                                   [0 0           0]
-                                                                   [0 0 :white-pawn]]) :from [2 2] :to [1 1]})))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0 0           0]
+                                                     [0 0           0]
+                                                     [0 0 :white-pawn]]) :from [2 2] :to [1 1]})))
 
                     (it "can't move other plases than up left and up rights"
-                        (should-not (is-move-valid {:board (mx/matrix [[          0 0]
-                                                                       [:white-pawn 0]]) :from [1 0] :to [0 0]}))
+                        (should-not (is-move-valid
+                                     {:board (mx/matrix [[          0 0]
+                                                         [:white-pawn 0]]) :from [1 0] :to [0 0]}))
 
-                        (should-not (is-move-valid {:board (mx/matrix [[          0 0]
-                                                                       [:white-pawn 0]]) :from [1 0] :to [1 1]})))
+                        (should-not (is-move-valid
+                                     {:board (mx/matrix [[          0 0]
+                                                         [:white-pawn 0]]) :from [1 0] :to [1 1]})))
 
                     (it "can't move more than one field"
-                        (should-not (is-move-valid {:board (mx/matrix [[          0 0 0 0]
-                                                                       [          0 0 0 0]
-                                                                       [          0 0 0 0]
-                                                                       [:white-pawn 0 0 0]]) :from [3 0] :to [0 3]})))
+                        (should-not (is-move-valid
+                                     {:board (mx/matrix [[          0 0 0 0]
+                                                         [          0 0 0 0]
+                                                         [          0 0 0 0]
+                                                         [:white-pawn 0 0 0]]) :from [3 0] :to [0 3]})))
                     (it "can beat black pawn"
-                        (should (is-move-valid {:board (mx/matrix [[          0           0 0]
-                                                                   [          0 :black-pawn 0]
-                                                                   [:white-pawn           0 0]]) :from [2 0] :to [0 2]}))))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[          0           0 0]
+                                                     [          0 :black-pawn 0]
+                                                     [:white-pawn           0 0]]) :from [2 0] :to [0 2]}))))
                     (it "can't beat white pawn"
-                        (should-not (is-move-valid {:board (mx/matrix [[          0           0 0]
-                                                                       [0           :white-pawn 0]
-                                                                       [:white-pawn           0 0]]) :from [2 0] :to [0 2]}))
+                        (should-not (is-move-valid
+                                     {:board (mx/matrix [[          0           0 0]
+                                                         [0           :white-pawn 0]
+                                                         [:white-pawn           0 0]]) :from [2 0] :to [0 2]}))
 
-                        (should-not (is-move-valid {:board (mx/matrix [[          0            0 0]
-                                                                       [          0 :white-queen 0]
-                                                                       [:white-pawn            0 0]]) :from [2 0] :to [0 2]})))
+                        (should-not (is-move-valid
+                                     {:board (mx/matrix [[          0            0 0]
+                                                         [          0 :white-queen 0]
+                                                         [:white-pawn            0 0]]) :from [2 0] :to [0 2]})))
 
           (describe "black pawn moves"
                     (it "can move down right"
-                        (should (is-move-valid {:board (mx/matrix [[0           0 0]
-                                                                   [0 :black-pawn 0]
-                                                                   [0           0 0]]) :from [1 1] :to [2 2]})))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0           0 0]
+                                                     [0 :black-pawn 0]
+                                                     [0           0 0]]) :from [1 1] :to [2 2]})))
                     (it "can beat white pawn"
-                        (should (is-move-valid {:board (mx/matrix [[0           0 :black-pawn]
-                                                                   [0 :white-pawn           0]
-                                                                   [0           0           0]]) :from [0 2] :to [2 0]}))))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0           0 :black-pawn]
+                                                     [0 :white-pawn           0]
+                                                     [0           0           0]]) :from [0 2] :to [2 0]}))))
           (describe "white queen moves"
                     (it "can move down all directions"
-                        (should (is-move-valid {:board (mx/matrix [[0            0 0]
-                                                                   [0 :white-queen 0]
-                                                                   [0            0 0]]) :from [1 1] :to [2 2]}))))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0            0 0]
+                                                     [0 :white-queen 0]
+                                                     [0            0 0]]) :from [1 1] :to [2 2]}))))
           (describe "black queen moves"
                     (it "can move down all directions"
-                        (should (is-move-valid {:board (mx/matrix [[0            0 0]
-                                                                   [0 :black-queen 0]
-                                                                   [0            0 0]]) :from [1 1] :to [2 2]})))))
+                        (should (is-move-valid
+                                 {:board (mx/matrix [[0            0 0]
+                                                     [0 :black-queen 0]
+                                                     [0            0 0]]) :from [1 1] :to [2 2]})))))
