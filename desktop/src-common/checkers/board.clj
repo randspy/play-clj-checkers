@@ -19,14 +19,14 @@
               [:b :w :b :w :b :w :b :w]]))
 
 (def new-game
-  (mx/matrix [[0 :bp 0 :bp 0 :bp 0 :bp]
-              [:bp 0 :bp 0 :bp 0 :bp 0]
-              [0 :bp 0 :bp 0 :bp 0 :bp]
-              [0 0 0 0 0 0 0 0]
-              [0 0 0 0 0 0 0 0]
-              [:wp 0 :wp 0 :wp 0 :wp 0]
-              [0 :wp 0 :wp 0 :wp 0 :wp]
-              [:wp 0 :wp 0 :wp 0 :wp 0]]))
+  (mx/matrix [[       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
+              [:black-p        0 :black-p        0 :black-p        0 :black-p        0]
+              [       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
+              [       0        0        0        0        0        0        0        0]
+              [       0        0        0        0        0        0        0        0]
+              [:white-p        0 :white-p        0 :white-p        0 :white-p        0]
+              [       0 :white-p        0 :white-p        0 :white-p        0 :white-p]
+              [:white-p        0 :white-p        0 :white-p        0 :white-p        0]]))
 
 (defn- create-board-element[elem]
   (case elem
@@ -34,8 +34,9 @@
      :b "board/black.png"
      :g "board/green.png"
      :r "board/red.png"
-     :bp "board/black_pawn.png"
-     :wp "board/white_pawn.png"))
+     :black-p "board/black_pawn.png"
+     :white-p "board/white_pawn.png"
+     0 "board/transparent.png"))
 
 (defn- generate-board-element [type x y]
   (let [board-element (create-board-element type)]
@@ -82,4 +83,4 @@
             entities)))
 
 (defn filter-pawns [entities]
-  (filter #(= (:type %) :wp) entities))
+  (filter #(= (:type %) :white-p) entities))

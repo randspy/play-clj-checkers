@@ -22,29 +22,29 @@
 (defn- is-pawn-on-coordinates [{:keys [board from]}]
   (not= 0 (mx/mget board (first from) (second from))))
 
-(def white-pawn-validation-board (mx/matrix [[:beat     0           0     0 :beat]
-                                             [    0 :move           0 :move     0]
-                                             [    0     0 :white-pawn     0     0]
-                                             [    0     0           0     0     0]
-                                             [    0     0           0     0     0]]))
+(def white-pawn-validation-board (mx/matrix [[:beat     0        0     0 :beat]
+                                             [    0 :move        0 :move     0]
+                                             [    0     0 :white-p     0     0]
+                                             [    0     0        0     0     0]
+                                             [    0     0        0     0     0]]))
 
-(def black-pawn-validation-board (mx/matrix [[    0     0           0     0     0]
-                                             [    0     0           0     0     0]
-                                             [    0     0 :black-pawn     0     0]
-                                             [    0 :move           0 :move     0]
-                                             [:beat     0           0     0 :beat]]))
+(def black-pawn-validation-board (mx/matrix [[    0     0        0     0     0]
+                                             [    0     0        0     0     0]
+                                             [    0     0 :black-p     0     0]
+                                             [    0 :move        0 :move     0]
+                                             [:beat     0        0     0 :beat]]))
 
-(def white-queen-validation-board (mx/matrix [[:beat     0           0     0 :beat]
-                                              [    0 :move           0 :move     0]
-                                              [    0     0 :white-queen    0     0]
-                                              [    0 :move           0 :move     0]
-                                              [:beat     0           0     0 :beat]]))
+(def white-queen-validation-board (mx/matrix [[:beat     0        0     0 :beat]
+                                              [    0 :move        0 :move     0]
+                                              [    0     0 :white-q     0     0]
+                                              [    0 :move        0 :move     0]
+                                              [:beat     0        0     0 :beat]]))
 
-(def black-queen-validation-board (mx/matrix [[:beat     0           0     0 :beat]
-                                              [    0 :move           0 :move     0]
-                                              [    0     0 :black-pawn    0     0]
-                                              [    0 :move           0 :move     0]
-                                              [:beat     0           0     0 :beat]]))
+(def black-queen-validation-board (mx/matrix [[:beat     0        0     0 :beat]
+                                              [    0 :move        0 :move     0]
+                                              [    0     0 :black-q     0     0]
+                                              [    0 :move        0 :move     0]
+                                              [:beat     0        0     0 :beat]]))
 
 
 (defn- get-pawn [board from]
@@ -53,10 +53,10 @@
 (defn- get-valid-move-coordinates [board from]
   (let [pawn-type (get-pawn board from)]
     (case pawn-type
-      :white-pawn white-pawn-validation-board
-      :black-pawn black-pawn-validation-board
-      :white-queen white-queen-validation-board
-      :black-queen black-queen-validation-board)))
+      :white-p white-pawn-validation-board
+      :black-p black-pawn-validation-board
+      :white-q white-queen-validation-board
+      :black-q black-queen-validation-board)))
 
 (defn- get-destination-from-validation-board [board from to]
   (let [x-math-vector (- (first to) (first from))
@@ -74,7 +74,7 @@
 
 (defn- is-pawn-in-middle-enemy [pawn-in-middle pawn]
   (if (= pawn-in-middle 0) false
-    (let [white-side [:white-pawn :white-queen]
+    (let [white-side [:white-p :white-q]
           is-pawn-on-white-side (some #(= pawn %) white-side)
           is-middle-pawn-on-white-side (some #(= pawn-in-middle %) white-side)]
       (not= is-pawn-on-white-side is-middle-pawn-on-white-side))))
