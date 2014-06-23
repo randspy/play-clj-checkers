@@ -92,26 +92,13 @@
                 pawn-between-destination-and-original-pawn
                 (get-pawn board from))))))
 
+(defn- is-pawn-on-players-side [{:keys [board from pawn-type]}]
+  (some #(= (get-pawn board from) %) pawn-type))
 
 (defn is-move-valid [move]
   (and
     (is-inside-board move)
     (is-pawn-on-coordinates move)
     (is-pawn-allowed-to-move move)
-    (is-destination-field-empty move)))
-
-(defn is-white-move-valid [move]
-  (let [{:keys [board from to]} move
-        pawn (get-pawn board from)]
-    (if (or (= pawn :white-p)
-            (= pawn :white-q))
-      (is-move-valid move)
-      false)))
-
-(defn is-black-move-valid [move]
-  (let [{:keys [board from to]} move
-        pawn (get-pawn board from)]
-    (if (or (= pawn :black-p)
-            (= pawn :black-q))
-      (is-move-valid move)
-      false)))
+    (is-destination-field-empty move)
+    (is-pawn-on-players-side move)))

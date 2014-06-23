@@ -19,4 +19,4 @@
                    [:white-p        0        0        0        0]
                    [       0        0       0 :white-p        0]
                    [:white-p        0 :white-p        0 :white-p]])
-                 (move-white {:board @@board :from [3 1] :to [2 0]})))))
+                 (move {:board @@board :from [3 1] :to [2 0] :pawn-type [:white-p]})))))
