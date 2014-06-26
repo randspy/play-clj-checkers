@@ -19,7 +19,7 @@
     (it "Can't move because selected pown does not exist."
         (should-not (is-move-valid  {:board (mx/matrix [[0 0] [0 0]]) :from [1 0] :to [0 1] :pawn-type [:white-p]})))
 
-  (describe "moves outside of the board"
+  (describe "Moves outside of the board."
     (it "Can't move in coordinates over board size."
         (should-not (is-move-valid
                      {:board (mx/matrix [[0        0]

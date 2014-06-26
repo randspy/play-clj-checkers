@@ -28,8 +28,7 @@
   :on-touch-down
   (fn [screen entities]
     (let [pos (input->screen screen (:input-x screen) (:input-y screen))]
-      (do (print (board/filter-location (board/filter-pawns entities) pos))
-        entities))))
+      (board/move-pawn entities pos))))
 
 (defn replace-board-elem [position old-elem new-elem])
 (defgame checkers
@@ -37,4 +36,5 @@
   (fn [this]
     (set-screen! this main-screen)))
 
+;;(on-gl (set-screen! checkers main-screen))
 (-> main-screen :entities deref)

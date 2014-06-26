@@ -1,7 +1,8 @@
 (ns checkers.board
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
-            [clojure.core.matrix :as mx]))
+            [clojure.core.matrix :as mx])
+  (:import [com.badlogic.gdx.graphics Texture]))
 
 
 (def board-element-dimension-in-px 55)
@@ -81,6 +82,30 @@
     (filter #(and (< (:x %) x (+ (:x %) board-element-dimension-in-px))
                   (< (:y %) y (+ (:y %) board-element-dimension-in-px)))
             entities)))
+
+(defn new-texture [file]
+  (Texture. file))
+
+(defn entity-at-position? [entity position]
+  (let [x-pos (:x position)
+        y-pos (:y position)
+        x-low-ent (:x entity)
+        y-low-ent (:y entity)
+        x-hight-ent (+ (:width entity) x-low-ent)
+        y-hight-ent (+ (:height entity) y-low-ent)]
+    (and (< x-low-ent x-pos x-hight-ent) (< y-low-ent y-pos y-hight-ent))))
+
+
+(defn- update-pawn-position [entity position]
+  (if (and (#(= (:type %) :b) entity) (entity-at-position? entity position))
+    (do
+      (texture! entity :set-texture (new-texture "board/green.png"))
+      (assoc entity :type :g))
+    entity))
+
+
+(defn move-pawn [entities position]
+  (map #(update-pawn-position %1 position) entities))
 
 (defn filter-pawns [entities]
   (filter #(= (:type %) :white-p) entities))
