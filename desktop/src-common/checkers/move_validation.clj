@@ -2,24 +2,24 @@
   (:require [clojure.core.matrix :as mx]))
 
 
-(defn- are-coordinates-positive [coordinates]
+(defn- coordinates-positive? [coordinates]
   (not (some #(< % 0) coordinates)))
 
-(defn- are-coordinates-smaller-than-dimensions [dimensions coordinates]
+(defn- coordinates-smaller-than-dimensions? [dimensions coordinates]
   (not (some #(< % 1)
               (map - dimensions coordinates))))
 
-(defn- is-inside-board [{:keys [board from to]}]
+(defn- inside-board? [{:keys [board from to]}]
   (and
-   (are-coordinates-smaller-than-dimensions (mx/shape board) from)
-   (are-coordinates-smaller-than-dimensions (mx/shape board) to)
-   (are-coordinates-positive from)
-   (are-coordinates-positive to)))
+   (coordinates-smaller-than-dimensions? (mx/shape board) from)
+   (coordinates-smaller-than-dimensions? (mx/shape board) to)
+   (coordinates-positive? from)
+   (coordinates-positive? to)))
 
-(defn- is-destination-field-empty [{:keys [board to]}]
+(defn- destination-field-empty? [{:keys [board to]}]
   (if (= 0 (mx/mget board (first to) (second to))) true false))
 
-(defn- is-pawn-on-coordinates [{:keys [board from]}]
+(defn- pawn-on-coordinates? [{:keys [board from]}]
   (not= 0 (mx/mget board (first from) (second from))))
 
 (def white-pawn-validation-board (mx/matrix [[:beat     0        0     0 :beat]
@@ -79,7 +79,7 @@
           is-middle-pawn-on-white-side (some #(= pawn-in-middle %) white-side)]
       (not= is-pawn-on-white-side is-middle-pawn-on-white-side))))
 
-(defn- is-pawn-allowed-to-move [{:keys [board from to]}]
+(defn- pawn-allowed-to-move? [{:keys [board from to]}]
   (let [x-math-vector (- (first to) (first from))
         y-math-vector (- (second to) (second from))
         destination (get-destination-from-validation-board board from to)
@@ -92,13 +92,13 @@
                 pawn-between-destination-and-original-pawn
                 (get-pawn board from))))))
 
-(defn- is-pawn-on-players-side [{:keys [board from pawn-type]}]
+(defn- pawn-on-players-side? [{:keys [board from pawn-type]}]
   (some #(= (get-pawn board from) %) pawn-type))
 
-(defn is-move-valid [move]
+(defn move-valid? [move]
   (and
-    (is-inside-board move)
-    (is-pawn-on-coordinates move)
-    (is-pawn-allowed-to-move move)
-    (is-destination-field-empty move)
-    (is-pawn-on-players-side move)))
+    (inside-board? move)
+    (pawn-on-coordinates? move)
+    (pawn-allowed-to-move? move)
+    (destination-field-empty? move)
+    (pawn-on-players-side? move)))
