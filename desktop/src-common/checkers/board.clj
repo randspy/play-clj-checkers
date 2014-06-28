@@ -90,12 +90,18 @@
     (and (< x-low-ent x-pos x-hight-ent) (< y-low-ent y-pos y-hight-ent))))
 
 
-(defn- chenge-color-of-pawns-beckground [entity position]
-  (if (and (#(= (:type %) :b) entity) (entity-at-position? entity position))
-    (do
-      (texture! entity :set-texture (new-texture (create-board-element :g)))
-      (assoc entity :type :g))
-    entity))
+(defn- change-color [entity new-color]
+  (do
+      (texture! entity :set-texture (new-texture (create-board-element new-color)))
+      (assoc entity :type new-color)))
+
+(defn- chenge-color-of-pawns-beckground [entity position selected-pawn-is-valid]
+  (cond
+       (and selected-pawn-is-valid
+            (#(= (:type %) :b) entity)
+            (entity-at-position? entity position)) (change-color entity :g)
+       (#(= (:type %) :g) entity) (change-color entity :b)
+       :else entity))
 
 (defn- pawn-to-player-mapper [pawn]
   (case pawn
@@ -118,10 +124,11 @@
       (assoc entity :type (game/get-player)))
     entity))
 
+(game/change-player)
 (defn select-pawn [entities position]
   (let [selected-pawn-is-valid
           (some true? (map #(selected-pawn-is-valid? % position (game/get-player)) entities))
         entities-with-updated-active-player-indicator
           (map #(update-active-player-indicator %1 position selected-pawn-is-valid) entities)]
-    (map #(chenge-color-of-pawns-beckground %1 position)
+    (map #(chenge-color-of-pawns-beckground %1 position selected-pawn-is-valid )
          entities-with-updated-active-player-indicator)))
