@@ -11,8 +11,9 @@
     (update! screen :renderer (stage))
     (let [background (texture "board/wood.jpg")
           boardfield (board/gen-board board/board)
-          new-game-pawns (board/gen-board board/new-game)]
-      [background boardfield new-game-pawns]))
+          new-game-pawns (board/gen-board board/new-game)
+          active-player-indicator (board/generate-board-element :white-player-indicator 0 0)]
+      [background active-player-indicator boardfield new-game-pawns]))
 
   :on-render
   (fn [screen entities]

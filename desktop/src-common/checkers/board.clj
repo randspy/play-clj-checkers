@@ -1,7 +1,8 @@
 (ns checkers.board
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
-            [clojure.core.matrix :as mx])
+            [clojure.core.matrix :as mx]
+            [checkers.game :as game])
   (:import [com.badlogic.gdx.graphics Texture]))
 
 
@@ -32,14 +33,16 @@
 (defn- create-board-element[elem]
   (case elem
      :w "board/white.png"
+     :white-player-indicator "board/white.png"
      :b "board/black.png"
+     :black-player-indicator "board/black.png"
      :g "board/green.png"
      :r "board/red.png"
      :black-p "board/black_pawn.png"
      :white-p "board/white_pawn.png"
      0 "board/transparent.png"))
 
-(defn- generate-board-element [type x y]
+(defn generate-board-element [type x y]
   (let [board-element (create-board-element type)]
     (if (not (nil? board-element))
       (assoc (texture board-element)
@@ -99,13 +102,22 @@
 (defn- update-pawn-position [entity position]
   (if (and (#(= (:type %) :b) entity) (entity-at-position? entity position))
     (do
-      (texture! entity :set-texture (new-texture "board/green.png"))
+      (texture! entity :set-texture (new-texture (create-board-element :g)))
       (assoc entity :type :g))
+    entity))
+
+(defn- update-active-player-indicator [entity]
+  (if (#(= (:type %) (game/get-player-indicator)) entity)
+    (do
+      (game/change-player)
+      (texture! entity :set-texture (new-texture (create-board-element (game/get-player-indicator))))
+      (assoc entity :type (game/get-player-indicator)))
     entity))
 
 
 (defn move-pawn [entities position]
-  (map #(update-pawn-position %1 position) entities))
+  (let [updated-active-player-indicator (map update-active-player-indicator entities)]
+    (map #(update-pawn-position %1 position) updated-active-player-indicator)))
 
 (defn filter-pawns [entities]
   (filter #(= (:type %) :white-p) entities))
