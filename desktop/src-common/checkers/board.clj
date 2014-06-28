@@ -33,9 +33,9 @@
 (defn- create-board-element[elem]
   (case elem
      :w "board/white.png"
-     :white-player-indicator "board/white.png"
+     :white-player "board/white.png"
      :b "board/black.png"
-     :black-player-indicator "board/black.png"
+     :black-player "board/black.png"
      :g "board/green.png"
      :r "board/red.png"
      :black-p "board/black_pawn.png"
@@ -77,15 +77,6 @@
                       (+ x-starting-position (calc-position-in-row-in-px elem-index))
                       (- y-starting-position (calc-position-in-col-in-px elem-index)))))))))
 
-
-
-(defn filter-location [entities position]
-  (let [x (:x position)
-        y (:y position)]
-    (filter #(and (< (:x %) x (+ (:x %) board-element-dimension-in-px))
-                  (< (:y %) y (+ (:y %) board-element-dimension-in-px)))
-            entities)))
-
 (defn new-texture [file]
   (Texture. file))
 
@@ -99,25 +90,38 @@
     (and (< x-low-ent x-pos x-hight-ent) (< y-low-ent y-pos y-hight-ent))))
 
 
-(defn- update-pawn-position [entity position]
+(defn- chenge-color-of-pawns-beckground [entity position]
   (if (and (#(= (:type %) :b) entity) (entity-at-position? entity position))
     (do
       (texture! entity :set-texture (new-texture (create-board-element :g)))
       (assoc entity :type :g))
     entity))
 
-(defn- update-active-player-indicator [entity]
-  (if (#(= (:type %) (game/get-player-indicator)) entity)
+(defn- pawn-to-player-mapper [pawn]
+  (case pawn
+    :white-p :white-player
+    :white-q :white-player
+    :black-p :black-player
+    :black-q :black-player))
+
+(defn selected-pawn-is-valid? [entity position player]
+  (and (some #(= % (:type entity)) [:white-p :white-q :black-p :black-q])
+           (entity-at-position? entity position)
+           (= (pawn-to-player-mapper(:type entity)) player)))
+
+(defn- update-active-player-indicator [entity position selected-pawn-is-valid]
+  (if (and (#(= (:type %) (game/get-player)) entity)
+            selected-pawn-is-valid)
     (do
       (game/change-player)
-      (texture! entity :set-texture (new-texture (create-board-element (game/get-player-indicator))))
-      (assoc entity :type (game/get-player-indicator)))
+      (texture! entity :set-texture (new-texture (create-board-element (game/get-player))))
+      (assoc entity :type (game/get-player)))
     entity))
 
-
-(defn move-pawn [entities position]
-  (let [updated-active-player-indicator (map update-active-player-indicator entities)]
-    (map #(update-pawn-position %1 position) updated-active-player-indicator)))
-
-(defn filter-pawns [entities]
-  (filter #(= (:type %) :white-p) entities))
+(defn select-pawn [entities position]
+  (let [selected-pawn-is-valid
+          (some true? (map #(selected-pawn-is-valid? % position (game/get-player)) entities))
+        entities-with-updated-active-player-indicator
+          (map #(update-active-player-indicator %1 position selected-pawn-is-valid) entities)]
+    (map #(chenge-color-of-pawns-beckground %1 position)
+         entities-with-updated-active-player-indicator)))

@@ -4,15 +4,18 @@
             [checkers.move-validation :as mv]))
 
 
-(def current-player (atom :white-player-indicator))
+(def current-player (atom :white-player))
 
-(defn get-player-indicator []
+(defn get-player []
   @current-player)
 
 (defn change-player []
-  (if (= @current-player :white-player-indicator)
-      (reset! current-player :black-player-indicator)
-      (reset! current-player :white-player-indicator)))
+  (if (= @current-player :white-player)
+      (reset! current-player :black-player)
+      (reset! current-player :white-player)))
+
+(defn selected-player-valid? [player-type]
+  (= player-type (get-player)))
 
 (defn move[move]
   (let [{:keys [board from to]} move]

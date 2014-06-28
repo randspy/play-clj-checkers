@@ -12,7 +12,7 @@
     (let [background (texture "board/wood.jpg")
           boardfield (board/gen-board board/board)
           new-game-pawns (board/gen-board board/new-game)
-          active-player-indicator (board/generate-board-element :white-player-indicator 0 0)]
+          active-player-indicator (board/generate-board-element :white-player 0 0)]
       [background active-player-indicator boardfield new-game-pawns]))
 
   :on-render
@@ -29,7 +29,7 @@
   :on-touch-down
   (fn [screen entities]
     (let [pos (input->screen screen (:input-x screen) (:input-y screen))]
-      (board/move-pawn entities pos))))
+      (board/select-pawn entities pos))))
 
 (defn replace-board-elem [position old-elem new-elem])
 (defgame checkers
@@ -37,5 +37,11 @@
   (fn [this]
     (set-screen! this main-screen)))
 
+(set-screen-wrapper! (fn [screen screen-fn]
+                       (try (screen-fn)
+                         (catch Exception e
+                           (.printStackTrace e)
+                           (set-screen! checkers main-screen)))))
+
 ;;(on-gl (set-screen! checkers main-screen))
-(-> main-screen :entities deref)
+;;(-> main-screen :entities deref)
