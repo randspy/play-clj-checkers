@@ -102,3 +102,9 @@
     (pawn-allowed-to-move? move)
     (destination-field-empty? move)
     (pawn-on-players-side? move)))
+
+(defn select-valid? [move]
+  (and
+     (inside-board? move)
+     (pawn-on-coordinates? move)
+     (pawn-on-players-side? move)))

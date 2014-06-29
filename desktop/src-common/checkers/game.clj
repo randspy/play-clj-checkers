@@ -4,6 +4,22 @@
             [checkers.move-validation :as mv]))
 
 
+
+(def game-state (atom
+                 (mx/matrix [[       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
+                             [:black-p        0 :black-p        0 :black-p        0 :black-p        0]
+                             [       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
+                             [       0        0        0        0        0        0        0        0]
+                             [       0        0        0        0        0        0        0        0]
+                             [:white-p        0 :white-p        0 :white-p        0 :white-p        0]
+                             [       0 :white-p        0 :white-p        0 :white-p        0 :white-p]
+                             [:white-p        0 :white-p        0 :white-p        0 :white-p        0]])))
+
+(defn get-game-state []
+  @game-state)
+
+(def selected-pawn-coordinates (atom nil))
+
 (def current-player (atom :white-player))
 
 (defn get-player []

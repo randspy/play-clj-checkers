@@ -2,7 +2,8 @@
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
             [clojure.core.matrix :as mx]
-            [checkers.game :as game])
+            [checkers.game :as game]
+            [checkers.move-validation :as mv])
   (:import [com.badlogic.gdx.graphics Texture]))
 
 
@@ -20,16 +21,6 @@
               [:w :b :w :b :w :b :w :b]
               [:b :w :b :w :b :w :b :w]]))
 
-(def new-game
-  (mx/matrix [[       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
-              [:black-p        0 :black-p        0 :black-p        0 :black-p        0]
-              [       0 :black-p        0 :black-p        0 :black-p        0 :black-p]
-              [       0        0        0        0        0        0        0        0]
-              [       0        0        0        0        0        0        0        0]
-              [:white-p        0 :white-p        0 :white-p        0 :white-p        0]
-              [       0 :white-p        0 :white-p        0 :white-p        0 :white-p]
-              [:white-p        0 :white-p        0 :white-p        0 :white-p        0]]))
-
 (defn- create-board-element[elem]
   (case elem
      :w "board/white.png"
@@ -42,12 +33,14 @@
      :white-p "board/white_pawn.png"
      0 "board/transparent.png"))
 
-(defn generate-board-element [type x y]
+(defn generate-board-element [type x y x-board-position y-board-position]
   (let [board-element (create-board-element type)]
     (if (not (nil? board-element))
       (assoc (texture board-element)
         :x x
+        :x-board-position x-board-position
         :y y
+        :y-board-position y-board-position
         :width board-element-dimension-in-px
         :height board-element-dimension-in-px
         :type type)
@@ -75,7 +68,9 @@
                      (generate-board-element
                       (nth flatten-board elem-index)
                       (+ x-starting-position (calc-position-in-row-in-px elem-index))
-                      (- y-starting-position (calc-position-in-col-in-px elem-index)))))))))
+                      (- y-starting-position (calc-position-in-col-in-px elem-index))
+                      (int (/ elem-index number-of-elements-in-board-dimention))
+                      (mod elem-index number-of-elements-in-board-dimention))))))))
 
 (defn new-texture [file]
   (Texture. file))
@@ -88,6 +83,28 @@
         x-hight-ent (+ (:width entity) x-low-ent)
         y-hight-ent (+ (:height entity) y-low-ent)]
     (and (< x-low-ent x-pos x-hight-ent) (< y-low-ent y-pos y-hight-ent))))
+
+(defn get-pawn-positon-on-board[entities position]
+  (let[pawn-at-position (first (filter #(entity-at-position? % position) entities))]
+    (if (seq pawn-at-position)
+      [(:x-board-position pawn-at-position) (:y-board-position pawn-at-position)]
+      [-1 -1])))
+
+(defn- pawn-to-player-mapper [pawn]
+  (case pawn
+    :white-p :white-player
+    :white-q :white-player
+    :black-p :black-player
+    :black-q :black-player))
+
+(defn- player-to-pawn-mapper [player]
+  (case player
+    :white-player [:white-p :white-q]
+    :black-player [:black-p :black-q]))
+
+(defn selected-pawn-is-valid? [entities position player board]
+  (let [pawn-coordinates (get-pawn-positon-on-board entities position)]
+    (mv/select-valid? {:board board :from pawn-coordinates :pawn-type (player-to-pawn-mapper player)})))
 
 
 (defn- change-color [entity new-color]
@@ -103,18 +120,6 @@
        (#(= (:type %) :g) entity) (change-color entity :b)
        :else entity))
 
-(defn- pawn-to-player-mapper [pawn]
-  (case pawn
-    :white-p :white-player
-    :white-q :white-player
-    :black-p :black-player
-    :black-q :black-player))
-
-(defn selected-pawn-is-valid? [entity position player]
-  (and (some #(= % (:type entity)) [:white-p :white-q :black-p :black-q])
-           (entity-at-position? entity position)
-           (= (pawn-to-player-mapper(:type entity)) player)))
-
 (defn- update-active-player-indicator [entity position selected-pawn-is-valid]
   (if (and (#(= (:type %) (game/get-player)) entity)
             selected-pawn-is-valid)
@@ -124,11 +129,27 @@
       (assoc entity :type (game/get-player)))
     entity))
 
-(game/change-player)
+(defn get-entitis-containg-type [entities]
+  (filter #(contains? % :type) entities))
+
+(defn update-entities [function entities position flag]
+  (map #(function % position flag) entities))
+
 (defn select-pawn [entities position]
-  (let [selected-pawn-is-valid
-          (some true? (map #(selected-pawn-is-valid? % position (game/get-player)) entities))
-        entities-with-updated-active-player-indicator
-          (map #(update-active-player-indicator %1 position selected-pawn-is-valid) entities)]
-    (map #(chenge-color-of-pawns-beckground %1 position selected-pawn-is-valid )
-         entities-with-updated-active-player-indicator)))
+  (let [selected-pawn-is-valid (selected-pawn-is-valid?
+                                    (get-entitis-containg-type entities)
+                                    position
+                                    (game/get-player)
+                                    (game/get-game-state))
+        active-player-indicator-updated
+          (update-entities
+             update-active-player-indicator
+             entities position
+             selected-pawn-is-valid)]
+    (update-entities
+       chenge-color-of-pawns-beckground
+       active-player-indicator-updated
+       position
+       selected-pawn-is-valid)))
+
+;;(game/change-player)

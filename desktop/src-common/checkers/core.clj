@@ -1,7 +1,8 @@
 (ns checkers.core
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
-            [checkers.board :as board]))
+            [checkers.board :as board]
+            [checkers.game :as game]))
 
 (declare checkers main-screen)
 
@@ -10,9 +11,9 @@
   (fn [screen entities]
     (update! screen :renderer (stage))
     (let [background (texture "board/wood.jpg")
+          active-player-indicator (board/generate-board-element :white-player 0 0 0 0)
           boardfield (board/gen-board board/board)
-          new-game-pawns (board/gen-board board/new-game)
-          active-player-indicator (board/generate-board-element :white-player 0 0)]
+          new-game-pawns (board/gen-board @game/game-state)]
       [background active-player-indicator boardfield new-game-pawns]))
 
   :on-render
@@ -44,4 +45,4 @@
                            (set-screen! checkers main-screen)))))
 
 ;;(on-gl (set-screen! checkers main-screen))
-;;(-> main-screen :entities deref)
+(-> main-screen :entities deref)
